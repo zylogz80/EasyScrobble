@@ -65,6 +65,14 @@ Use EasyScrobble In Your Code:
 						nowPlayingItem];
 	[easyScrobble loveTrack:[self.musicPlayer nowPlayingItem]];
 
+EasyScrobble is synchronous. Doing sync net I/O on the main thread is a no-no so I
+advise wrapping EasyScrobble in a GDC block. Example:
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+    dispatch_async(queue, ^{
+        [easyScrobble scrobbleTrack:[self.musicPlayer nowPlayingItem]];
+    });
+
 
 
 
