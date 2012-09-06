@@ -3,35 +3,37 @@ Copyright (C) 2012 Adam Drew, AmStaff Apps adam@amstaffapps.com
 
 == About EasyScrobble ==
 
-I wanted a way to quickly and easily send scrobble data to Last.fm from my iOS app. There
-are other Last.fm scrobbling kits out there, and all of them are probably way better than
-this hobbled together piece of shit, but all the ones I found were either:
+I wanted a way to quickly and easily send scrobble data to Last.fm from 
+my iOS app. There are other Last.fm scrobbling kits out there, and all of 
+them are probably way better than this hobbled together piece of crap, but 
+all the ones I found were either:
 
 1. Difficult to use
 2. Not coded for ARC
 
-As I am a shitty coder I need easy to use stuff, and I can't write Objective C without 
-ARC so... I decided to implement what I needed myself and share.
+As I am a shitty coder I need easy to use stuff, and I can't write Objective 
+C without  ARC so... I decided to implement what I needed myself and share.
 
-EasyScrobble is open source software provided under an MIT license. See LICENSE for more 
-information.
+EasyScrobble is open source software provided under an MIT license. See LICENSE 
+for more information.
 
 == What EasyScrobble Does ==
 
-EasyScrobble is not a complete Last.fm API wrapper. All you can do with EasyScrobble is:
+EasyScrobble is not a complete Last.fm API wrapper. All you can do with 
+EasyScrobble is:
 
 1. Authenticate to Last.FM
 2. Post tracks for scrobbling
 3. "Love" a track
 
-EasyScrobble wont get track metadata, or pull down artwork, or do any of the rich social
-stuff Last.fm offers. All I needed to do was scrobble and like so that's all EasyScrobble
-does. It's limited BUT if that's all you need to do EasyScrobble is a lot easier than the
-other kits I found out there.
+EasyScrobble wont get track metadata, or pull down artwork, or do any of the 
+rich social stuff Last.fm offers. All I needed to do was scrobble and like so 
+that's all EasyScrobble does. It's limited BUT if that's all you need to do 
+EasyScrobble is a lot easier than the other kits I found out there.
 
-EasyScrobble is ugly and does despicable things that no self respecting iOS code should
-do. I was willing to accept ugliness if it meant ease of use (i.e. synchronous operation,
-no callbacks, etc.) 
+EasyScrobble is ugly and does despicable things that no self respecting iOS 
+code should do. I was willing to accept ugliness if it meant ease of use (i.e. 
+synchronous operation, no callbacks, etc.) 
 
 == How To Use EasyScrobble ==
 
@@ -54,11 +56,13 @@ Use EasyScrobble In Your Code:
 	[easyScrobble setUsername:@"someUserName" andPassword:@"somePassword"];
 	
 	//Scrobble an MPMediaItem
-	MPMediaItem *nowPlayingItem = [[MPMusicPlayerController iPodMusicPlayer] nowPlayingItem];
+	MPMediaItem *nowPlayingItem = [[MPMusicPlayerController iPodMusicPlayer] 
+						nowPlayingItem];
 	[easyScrobble scrobbleTrack:[self.musicPlayer nowPlayingItem]];
 	
 	//"Love" an MPMediaItem
-	MPMediaItem *nowPlayingItem = [[MPMusicPlayerController iPodMusicPlayer] nowPlayingItem];
+	MPMediaItem *nowPlayingItem = [[MPMusicPlayerController iPodMusicPlayer] 
+						nowPlayingItem];
 	[easyScrobble loveTrack:[self.musicPlayer nowPlayingItem]];
 
 
