@@ -1,6 +1,5 @@
 //
 //  LPEasyScrobble.h
-//  LPMusicPlayer
 //
 //  Created by Adam Drew on 9/5/12.
 //  Copyright (c) 2012 Adam Drew, AmStaff Apps. All rights reserved.
@@ -21,20 +20,17 @@
 @property (strong, nonatomic) NSString *APIKey;
 @property (strong, nonatomic) NSString *APISecret;
 
-
 @property BOOL isInDebug;
 
 - (void) debugLog: (NSString*) stringToLog;
 
-- (void) setUsername: (NSString*) userNameArg andPassword: (NSString *) passwordArg;
+- (BOOL) setUsername: (NSString*) userNameArg andPassword: (NSString *) passwordArg;
 
-- (void) scrobbleTrack:(MPMediaItem *) track ;
+- (BOOL) scrobbleTrack:(MPMediaItem *) track ;
 
-- (void) loveTrack:(MPMediaItem *) track ;
+- (BOOL) loveTrack:(MPMediaItem *) track ;
 
-- (void) startSession;
-
-- (void) showError;
+- (BOOL) startSession;
 
 - (NSString*) MD5StringOfString:(NSString*) inputStr;
 

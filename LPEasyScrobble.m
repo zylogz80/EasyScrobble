@@ -19,12 +19,11 @@
 @synthesize APISecret;
 @synthesize isInDebug;
 
-
-- (void) setUsername: (NSString*) userNameArg andPassword: (NSString *) passwordArg {
+- (BOOL) setUsername: (NSString*) userNameArg andPassword: (NSString *) passwordArg {
     //Get the information required to log into Last.FM
 
     //Dev API Key and Secret
-    //You'll need to add yours here
+    //Add yours here
     [self setAPIKey:@""];
     [self setAPISecret:@""];
     
@@ -39,10 +38,10 @@
     [self setSessionKey:@"NOKEY"];
     
     //Start a session
-    [self startSession];
+    return [self startSession];
 }
 
-- (void) loveTrack:(MPMediaItem *) track {
+- (BOOL) loveTrack:(MPMediaItem *) track {
     //Loves a track
     
     
@@ -109,10 +108,26 @@
     NSString *responseString = [[NSString alloc] initWithData:response encoding:NSASCIIStringEncoding];
     
     [self debugLog:responseString];
-
+    
+    //We want to see if this Love call failed or succeeded
+    NSRange startRange = [responseString rangeOfString:@"<lfm status=\"ok\">"];
+    
+    if (startRange.length > 0) {
+        
+        [self debugLog:@"Call suceeded"];
+        
+        return TRUE;
+        
+    } else {
+        
+        [self debugLog:@"Call failed"];
+        
+        return FALSE;
+        
+    }
 }
 
-- (void) scrobbleTrack:(MPMediaItem *)track {
+- (BOOL) scrobbleTrack:(MPMediaItem *)track {
     //Scrobbles a track
     
     [self debugLog:@"Entered scrobbleTrack"];
@@ -197,21 +212,24 @@
     
     [self debugLog:responseString];
     
+    //We want to see if this Scrobble call failed or succeeded
+    NSRange startRange = [responseString rangeOfString:@"<lfm status=\"ok\">"];
+
+    if (startRange.length > 0) {
+        
+        [self debugLog:@"Call suceeded"];
+        
+        return TRUE;
+        
+    } else {
+        
+        [self debugLog:@"Call failed"];
+
+        return FALSE;   
+    }   
 }
 
-- (void) showError {
-    
-    UIAlertView *alert =
-    [[UIAlertView alloc] initWithTitle: @"Last.fm Login Failed"
-                               message: @"Something went wrong with Last.fm"
-                              delegate: self
-                     cancelButtonTitle: @"OK"
-                     otherButtonTitles: nil];
-    [alert show];
-    
-}
-
-- (void) startSession {
+- (BOOL) startSession {
     //The goal of this method is to authenticate with Last.FM and get a session key
     
     [self debugLog:@"Entered startSession"];
@@ -292,8 +310,10 @@
     if ( [self.sessionKey isEqualToString:@"NOKEY"]) {
         //If we've made it this far and the sessionKey wasn't set
         //then something went wrong talking to Last.fm
-        [self showError];
+        return FALSE;
     }
+    return TRUE;
+    
 }
 
 - (NSString*) MD5StringOfString:(NSString*) inputStr;
