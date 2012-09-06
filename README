@@ -65,13 +65,28 @@ Use EasyScrobble In Your Code:
 						nowPlayingItem];
 	[easyScrobble loveTrack:[self.musicPlayer nowPlayingItem]];
 
+== Usage Notes ==
+
+Be Sync Considerate:
 EasyScrobble is synchronous. Doing sync net I/O on the main thread is a no-no so I
 advise wrapping EasyScrobble in a GDC block. Example:
 
-    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
-    dispatch_async(queue, ^{
-        [easyScrobble scrobbleTrack:[self.musicPlayer nowPlayingItem]];
+    dispatch_queue_t queue = 
+	dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+    	dispatch_async(queue, ^{
+       		 [easyScrobble scrobbleTrack:[self.musicPlayer nowPlayingItem]];
     });
+
+Debug Mode:
+By default debug mode is on. In debug mode various important bits of data will be
+logged out to the console when using EasyScrobble. This will help you should you
+run into problem (example, use the debug output to check a POST with curl). 
+
+If you intend to ship EasyScrobble in something I suggest turning debug mode off.
+You can set it in EasyScrobble.m:
+
+    [self setIsInDebug:FALSE];
+
 
 
 
