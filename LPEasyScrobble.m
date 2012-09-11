@@ -79,17 +79,18 @@
     [api_request appendString:@"api_key="];
     [api_request appendString:self.APIKey];
     [api_request appendString:@"&artist="];
-    [api_request appendString:artist];
+    [api_request appendString:[self scrubString:artist]];
     [api_request appendString:@"&method=track.love"];
     [api_request appendString:@"&sk="];
     [api_request appendString:self.sessionKey];
     [api_request appendString:@"&track="];
-    [api_request appendString:song];
+    [api_request appendString:[self scrubString:song]];
     [api_request appendString:@"&api_sig="];
     [api_request appendString:api_sig_hashed];
     
     [self debugLog:@"API Request:"];
     [self debugLog:api_request];
+    
     
     //Set the URL
     NSURL *apiURL = [NSURL URLWithString:@"https://ws.audioscrobbler.com/2.0/"];
@@ -122,10 +123,27 @@
         
         [self debugLog:@"Call failed"];
         
+        
         return FALSE;
         
     }
 }
+
+- ( NSString *) scrubString: (NSString *) string{
+    //We need to scrub out escaped characters
+
+    //Varients of this solution have been posted on so many blogs and StackOverflow answers
+    //that I don't know who to give credit to for originating it.
+    //Simon Woodside: http://simonwoodside.com/weblog/2009/4/22/how_to_really_url_encode/
+    //Darron Schall: http://stackoverflow.com/questions/4814558/how-to-encode-an-url
+    //Search the web for CFURLCreateStringByAddingPercentEscapes and URL and you'll see hundreds of
+    //results... so, whoever came up with this, thanks.
+    
+    NSString * encodedString = (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes(NULL, (__bridge CFStringRef)string, NULL, (CFStringRef)@"!*'();:@&=+$,/?%#[]",kCFStringEncodingUTF8 );
+    return encodedString;
+    
+}
+
 
 - (BOOL) scrobbleTrack:(MPMediaItem *)track {
     //Scrobbles a track
@@ -151,18 +169,18 @@
     //Build auth.getMobileSession SIG
     NSMutableString *api_sig = [NSMutableString string];
     [api_sig appendString:@"album"];
-    [api_sig appendString:album];
+    [api_sig appendString:[track valueForKey:MPMediaItemPropertyAlbumTitle]];
     [api_sig appendString:@"api_key"];
     [api_sig appendString:self.APIKey];
     [api_sig appendString:@"artist"];
-    [api_sig appendString:artist];
+    [api_sig appendString:[track valueForKey:MPMediaItemPropertyAlbumArtist]];
     [api_sig appendString:@"methodtrack.scrobble"];
     [api_sig appendString:@"sk"];
     [api_sig appendString:self.sessionKey];
     [api_sig appendString:@"timestamp"];
     [api_sig appendString:dateString];
     [api_sig appendString:@"track"];
-    [api_sig appendString:song];
+    [api_sig appendString:[track valueForKey:MPMediaItemPropertyTitle]];
     [api_sig appendString:self.APISecret];
     
     [self debugLog:@"API Sig (Raw):"];
@@ -176,18 +194,18 @@
     //Build auth.getMobileSession SIG
     NSMutableString *api_request = [NSMutableString string];
     [api_request appendString:@"album="];
-    [api_request appendString:album];
+    [api_request appendString:[self scrubString:album]];
     [api_request appendString:@"&api_key="];
     [api_request appendString:self.APIKey];
     [api_request appendString:@"&artist="];
-    [api_request appendString:artist];
+    [api_request appendString: [self scrubString:artist]];
     [api_request appendString:@"&method=track.scrobble"];
     [api_request appendString:@"&sk="];
     [api_request appendString:self.sessionKey];
     [api_request appendString:@"&timestamp="];
     [api_request appendString:dateString];
     [api_request appendString:@"&track="];
-    [api_request appendString:song];
+    [api_request appendString: [self scrubString:song]];
     [api_request appendString:@"&api_sig="];
     [api_request appendString:api_sig_hashed];
     
@@ -225,8 +243,13 @@
         
         [self debugLog:@"Call failed"];
 
-        return FALSE;   
-    }   
+        
+        return FALSE;
+        
+    }
+    
+    
+    
 }
 
 - (BOOL) startSession {
